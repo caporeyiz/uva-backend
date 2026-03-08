@@ -24,7 +24,6 @@ import {
   LogOut,
   Loader2
 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
 
 interface AnalysisPageProps {
   onNavigate: (view: 'landing' | 'dashboard' | 'analysis' | 'chat' | 'login' | 'register') => void;
@@ -63,22 +62,13 @@ export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
+    // TODO: Replace with backend API call to /api/v1/analysis/prescriptions
     const fetchPrescription = async () => {
       setIsAiLoading(true);
-      try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: [{ role: "user", parts: [{ text: "YKS öğrencisi için son deneme sonuçlarına göre (Matematik: 32D 8Y, Fizik: 12D 2Y, Biyoloji: 10D 3Y) 3 adet kısa çalışma tavsiyesi (reçete) oluştur. JSON formatında ver: [{subject, status, statusColor, title, desc}]" }] }],
-          config: { responseMimeType: "application/json" }
-        });
-        const data = JSON.parse(response.text || "[]");
-        if (data.length > 0) setPrescriptions(data);
-      } catch (error) {
-        console.error("AI Prescription Error:", error);
-      } finally {
-        setIsAiLoading(false);
-      }
+      // Simulated delay for loading effect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Static prescriptions - will be replaced with backend API
+      setIsAiLoading(false);
     };
     fetchPrescription();
   }, []);

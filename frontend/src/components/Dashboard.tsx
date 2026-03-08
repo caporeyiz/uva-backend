@@ -25,7 +25,6 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
 
 interface Task {
   id: string;
@@ -96,20 +95,13 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
   }, [tasks]);
 
   useEffect(() => {
+    // TODO: Replace with backend API call to /api/v1/insights
     const fetchAiInsight = async () => {
       setIsAiLoading(true);
-      try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: [{ role: "user", parts: [{ text: "YKS öğrencisi için bugünkü çalışmalarına göre (paragraf, trigonometri, fizik, problem, biyoloji, kimya) kısa, motive edici ve tek cümlelik bir tavsiye ver." }] }],
-        });
-        setAiInsight(response.text || "Bugün harika gidiyorsun, tempoyu koru!");
-      } catch (error) {
-        setAiInsight("Bugün paragraf çözme hızın düştü, teknik videoya göz atmak ister misin?");
-      } finally {
-        setIsAiLoading(false);
-      }
+      // Simulated delay for loading effect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setAiInsight("Bugün harika gidiyorsun! Paragraf ve trigonometri çalışmaların çok iyi, tempoyu koru! 🚀");
+      setIsAiLoading(false);
     };
     fetchAiInsight();
   }, []);
