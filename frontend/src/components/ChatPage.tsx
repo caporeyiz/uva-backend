@@ -21,7 +21,7 @@ import {
   ChevronLeft,
   Loader2
 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { chatService } from '../services/chat.service';
 
 interface Message {
   id: string;
@@ -69,33 +69,27 @@ export default function ChatPage({ onNavigate }: ChatPageProps) {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `Sen YKS sınavına hazırlanan öğrencilere yardımcı olan uzman bir fizik öğretmenisin. Adın AI Mentor. Öğrencinin sorusu: ${messageText}` }]
-          }
-        ],
-        config: {
-          systemInstruction: "Sen YKS (TYT/AYT) sınavına hazırlanan öğrencilere yardımcı olan, cana yakın, motive edici ve uzman bir fizik öğretmenisin. Yanıtların kısa, öz ve öğrenciyi cesaretlendirici olmalı. Eğer öğrenci motivasyon isterse ona ilham verici sözler söyle. Eğer fizik sorusu sorarsa adım adım açıkla.",
-        }
+      const response = await chatService.sendMessage({
+        message: messageText,
+        context: messages.map(m => ({
+          role: m.role === 'ai' ? 'assistant' : 'user',
+          content: m.content
+        }))
       });
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        content: response.text || "Üzgünüm, şu an yanıt veremiyorum. Lütfen tekrar dene.",
+        content: response.response || "Üzgünüm, şu an yanıt veremiyorum. Lütfen tekrar dene.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
-      console.error("Gemini API Error:", error);
+      console.error("Chat API Error:", error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        content: "Bir hata oluştu. Lütfen internet bağlantını kontrol et ve tekrar dene.",
+        content: "Bir hata oluştu. Lütfen backend bağlantısını kontrol et ve tekrar dene.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, errorMessage]);
