@@ -58,9 +58,9 @@ export default function LoginPage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl -ml-24 -mb-24"></div>
           
-          <div className="relative z-10 flex items-center gap-3">
-            <img src="/uva-logo.png" alt="UVA Logo" className="h-12 w-auto" />
-            <h2 className="text-xl font-bold tracking-tight">UVA-AI Mentor</h2>
+          <div className="relative z-10 flex items-center gap-2">
+            <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
+            <h2 className="text-lg font-bold tracking-tight">UVA-AI Mentor</h2>
           </div>
 
           <div className="relative z-10 space-y-6">

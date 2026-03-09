@@ -52,27 +52,31 @@ export default function ChatPage() {
     const loadChatHistory = async () => {
       try {
         const history = await chatService.getChatHistory();
-        // Group messages into conversation sessions (by date/time proximity)
+        
+        // Group messages into conversation sessions based on time gaps
+        // A new session starts when there's a significant time gap (e.g., 30 minutes)
         const groupedHistory: ChatHistoryItem[] = [];
-        let currentSession: ChatHistoryItem[] = [];
+        const SESSION_GAP_MINUTES = 30;
         
-        history.forEach((item, index) => {
-          if (item.role === 'user') {
-            // Start a new session with user message
-            if (currentSession.length > 0) {
-              // Save previous session with first user message as title
-              groupedHistory.push(currentSession[0]);
+        if (history.length > 0) {
+          let sessionStart = history[0];
+          let lastMessageTime = new Date(history[0].created_at);
+          
+          for (let i = 1; i < history.length; i++) {
+            const currentTime = new Date(history[i].created_at);
+            const timeDiff = (currentTime.getTime() - lastMessageTime.getTime()) / (1000 * 60);
+            
+            // If time gap is more than 30 minutes, start new session
+            if (timeDiff > SESSION_GAP_MINUTES) {
+              groupedHistory.push(sessionStart);
+              sessionStart = history[i];
             }
-            currentSession = [item];
-          } else if (currentSession.length > 0) {
-            // Add AI response to current session
-            currentSession.push(item);
+            
+            lastMessageTime = currentTime;
           }
-        });
-        
-        // Add last session
-        if (currentSession.length > 0) {
-          groupedHistory.push(currentSession[0]);
+          
+          // Add the last session
+          groupedHistory.push(sessionStart);
         }
         
         setChatHistory(groupedHistory.reverse()); // Most recent first
@@ -92,28 +96,34 @@ export default function ChatPage() {
   const loadConversation = async (conversationId: number) => {
     try {
       // Load full conversation from backend
-      // For now, we'll fetch all history and filter by conversation session
       const history = await chatService.getChatHistory();
       
-      // Find all messages in this conversation session
+      // Find all messages in this conversation session (based on time gaps)
       const conversationMessages: Message[] = [];
+      const SESSION_GAP_MINUTES = 30;
       let foundStart = false;
+      let sessionStartTime: Date | null = null;
       
       for (const item of history) {
         if (item.id === conversationId) {
           foundStart = true;
+          sessionStartTime = new Date(item.created_at);
         }
         
-        if (foundStart) {
-          conversationMessages.push({
-            id: item.id.toString(),
-            role: item.role === 'assistant' ? 'ai' : 'user',
-            content: item.message,
-            timestamp: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          });
+        if (foundStart && sessionStartTime) {
+          const currentTime = new Date(item.created_at);
+          const timeDiff = Math.abs((currentTime.getTime() - sessionStartTime.getTime()) / (1000 * 60));
           
-          // Stop at next user message (new conversation)
-          if (item.role === 'user' && item.id !== conversationId) {
+          // Include all messages within 30 minutes of session start
+          if (timeDiff <= SESSION_GAP_MINUTES) {
+            conversationMessages.push({
+              id: item.id.toString(),
+              role: item.role === 'assistant' ? 'ai' : 'user',
+              content: item.message,
+              timestamp: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+          } else if (item.id !== conversationId) {
+            // Stop when we hit a message outside the time window
             break;
           }
         }
@@ -189,7 +199,7 @@ export default function ChatPage() {
           >
             <ChevronLeft size={20} />
           </button>
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-12 w-auto rounded-lg shadow-lg" />
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto rounded-lg shadow-lg" />
           <div>
             <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
@@ -201,12 +211,27 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowHistory(!showHistory)}
             className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${showHistory ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'}`}
           >
             <History size={20} />
+          </button>
+          <button 
+            onClick={() => {
+              setMessages([{
+                id: '1',
+                role: 'ai',
+                content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              }]);
+              setLoadedConversationId(null);
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white transition-colors"
+            title="Sohbeti Temizle"
+          >
+            <FileEdit size={20} />
           </button>
           <button className="hidden sm:flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors">
             <Settings size={20} />
