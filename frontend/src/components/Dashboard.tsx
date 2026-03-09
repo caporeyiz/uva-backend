@@ -195,7 +195,7 @@ export default function Dashboard() {
 
       <div className="flex flex-1">
         {/* Sidebar Navigation */}
-        <aside className="hidden lg:flex w-72 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 gap-8">
+        <aside className="hidden lg:flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-4 gap-6">
           <div className="flex flex-col gap-2">
             <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Menü</p>
             <nav className="flex flex-col gap-1">
@@ -214,8 +214,8 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 md:p-10 overflow-y-auto max-w-7xl mx-auto w-full">
-          <div className="flex flex-col gap-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-6xl mx-auto w-full">
+          <div className="flex flex-col gap-6">
             {/* Welcome Section */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}

@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
-import openai
+from openai import OpenAI
 from app.core.config import settings
 from app.api.dependencies import get_current_user
 from app.models.user import User
 
 router = APIRouter()
-
-# Set OpenAI API key
-openai.api_key = settings.OPENAI_API_KEY
 
 
 class ChatMessage(BaseModel):
@@ -40,6 +37,9 @@ async def chat_with_ai(
         )
     
     try:
+        # Initialize OpenAI client
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        
         # Convert messages to OpenAI format
         messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
         
@@ -51,8 +51,8 @@ async def chat_with_ai(
         
         messages.insert(0, system_message)
         
-        # Call OpenAI API
-        response = openai.ChatCompletion.create(
+        # Call OpenAI API with new syntax
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
             max_tokens=500,
