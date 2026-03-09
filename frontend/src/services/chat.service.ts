@@ -1,23 +1,29 @@
-import api from '../lib/api';
+import { api } from '../lib/api';
 
 export interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: string;
   content: string;
 }
 
-export interface ChatRequest {
-  message: string;
-  context?: ChatMessage[];
+interface ChatRequest {
+  messages: ChatMessage[];
 }
 
-export interface ChatResponse {
-  response: string;
-  timestamp: string;
+interface ChatResponse {
+  message: string;
 }
 
 export const chatService = {
-  async sendMessage(request: ChatRequest): Promise<ChatResponse> {
-    const response = await api.post('/chat', request);
-    return response.data;
-  },
+  async sendMessage(messages: ChatMessage[]): Promise<string> {
+    try {
+      const response = await api.post<ChatResponse>('/chat', {
+        messages
+      });
+      
+      return response.data.message;
+    } catch (error) {
+      console.error('Chat error:', error);
+      throw error;
+    }
+  }
 };

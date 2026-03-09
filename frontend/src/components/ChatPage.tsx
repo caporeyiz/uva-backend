@@ -22,7 +22,7 @@ import {
   ChevronLeft,
   Loader2
 } from 'lucide-react';
-import { chatService } from '../services/chat.service';
+import { chatService, ChatMessage } from '../services/chat.service';
 
 interface Message {
   id: string;
@@ -67,18 +67,24 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
-      const response = await chatService.sendMessage({
-        message: messageText,
-        context: messages.map(m => ({
+      // Convert all messages to backend format
+      const chatMessages: ChatMessage[] = [
+        ...messages.map(m => ({
           role: m.role === 'ai' ? 'assistant' : 'user',
           content: m.content
-        }))
-      });
+        })),
+        {
+          role: 'user',
+          content: messageText
+        }
+      ];
+
+      const aiMessageContent = await chatService.sendMessage(chatMessages);
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        content: response.response || "Üzgünüm, şu an yanıt veremiyorum. Lütfen tekrar dene.",
+        content: aiMessageContent || "Üzgünüm, şu an yanıt veremiyorum. Lütfen tekrar dene.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, aiResponse]);
