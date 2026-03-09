@@ -44,6 +44,7 @@ class User(Base):
     achievements = relationship("UserAchievement", back_populates="user", cascade="all, delete-orphan")
     books = relationship("UserBook", back_populates="student", cascade="all, delete-orphan")
     routines = relationship("DailyRoutine", back_populates="student", cascade="all, delete-orphan")
+    chat_history = relationship("ChatHistory", back_populates="user", cascade="all, delete-orphan")
 
 
 class ParentInfo(Base):

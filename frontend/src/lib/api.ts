@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = 'https://api.uvamentor.sbs';
-console.log('[UVA-BUILD-V2] API_URL =', API_URL);
 
 export const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
@@ -18,11 +17,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    // Log actual request URL to debug Mixed Content issue
-    const fullUrl = config.baseURL + config.url;
-    console.log('[AXIOS-REQUEST] Full URL:', fullUrl);
-    console.log('[AXIOS-REQUEST] baseURL:', config.baseURL);
-    console.log('[AXIOS-REQUEST] url:', config.url);
     return config;
   },
   (error) => {
