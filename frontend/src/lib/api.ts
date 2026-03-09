@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Force HTTPS for production API URL
-const rawUrl = import.meta.env.VITE_API_URL || 'https://api.uvamentor.sbs';
-const API_URL = rawUrl.replace(/^http:\/\//, 'https://');
+// Always use HTTPS for production - ignore env variable if it's HTTP
+const envUrl = import.meta.env.VITE_API_URL;
+const API_URL = (envUrl && envUrl.startsWith('https://')) ? envUrl : 'https://api.uvamentor.sbs';
 
 export const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
