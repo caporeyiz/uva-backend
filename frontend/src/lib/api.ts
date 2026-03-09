@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Use production API URL by default, can be overridden with VITE_API_URL env var
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.uvamentor.sbs';
+// Force HTTPS for production API URL
+const rawUrl = import.meta.env.VITE_API_URL || 'https://api.uvamentor.sbs';
+const API_URL = rawUrl.replace(/^http:\/\//, 'https://');
 
 export const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
