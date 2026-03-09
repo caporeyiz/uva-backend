@@ -22,13 +22,12 @@ class ChatResponse(BaseModel):
     message: str
 
 
-@router.post("/", response_model=ChatResponse)
-async def chat_with_ai(
+async def _chat_handler(
     request: ChatRequest,
-    current_user: User = Depends(get_current_user)
-):
+    current_user: User
+) -> ChatResponse:
     """
-    Chat with AI mentor using OpenAI API
+    Shared chat handler logic
     """
     if not settings.OPENAI_API_KEY:
         raise HTTPException(
@@ -68,3 +67,25 @@ async def chat_with_ai(
             status_code=500,
             detail=f"AI chat error: {str(e)}"
         )
+
+
+@router.post("/", response_model=ChatResponse)
+async def chat_with_ai_trailing_slash(
+    request: ChatRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Chat with AI mentor using OpenAI API (with trailing slash)
+    """
+    return await _chat_handler(request, current_user)
+
+
+@router.post("", response_model=ChatResponse)
+async def chat_with_ai_no_trailing_slash(
+    request: ChatRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Chat with AI mentor using OpenAI API (without trailing slash)
+    """
+    return await _chat_handler(request, current_user)

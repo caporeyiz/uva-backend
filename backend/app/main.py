@@ -24,6 +24,7 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     lifespan=lifespan,
+    redirect_slashes=False,  # Disable automatic trailing slash redirects
 )
 
 app.add_middleware(

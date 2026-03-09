@@ -16,7 +16,7 @@ interface ChatResponse {
 export const chatService = {
   async sendMessage(messages: ChatMessage[]): Promise<string> {
     try {
-      const response = await api.post<ChatResponse>('/chat', {
+      const response = await api.post<ChatResponse>('/chat/', {
         messages
       });
       
