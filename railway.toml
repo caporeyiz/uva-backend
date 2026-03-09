@@ -15,7 +15,7 @@ source = "backend"
 [[services]]
 name = "frontend"
 source = "frontend"
-buildCommand = "cd frontend && npm install && npm run build"
-startCommand = "cd frontend && npm run build && serve -s dist -l $PORT"
+buildCommand = "cd frontend && npm install && VITE_API_URL=https://api.uvamentor.sbs npm run build"
+startCommand = "cd frontend && serve -s dist -l $PORT"
 healthcheckPath = "/"
 healthcheckTimeout = 100
