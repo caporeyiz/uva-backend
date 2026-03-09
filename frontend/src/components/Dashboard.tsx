@@ -160,9 +160,7 @@ export default function Dashboard() {
       {/* Top Navigation Bar */}
       <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 z-50 flex-shrink-0">
         <div className="flex items-center gap-4">
-          <div className="text-primary">
-            <Zap size={32} fill="currentColor" />
-          </div>
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
           <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
         </div>
         <div className="flex flex-1 justify-end gap-4 items-center">
@@ -214,7 +212,7 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-6xl mx-auto w-full pb-20 lg:pb-8">
+        <main className="flex-1 p-4 md:p-5 lg:p-6 overflow-y-auto max-w-5xl mx-auto w-full pb-20 lg:pb-8">
           <div className="flex flex-col gap-6">
             {/* Welcome Section */}
             <motion.div
@@ -222,8 +220,8 @@ export default function Dashboard() {
               animate={{ opacity: 1, x: 0 }}
               className="flex flex-col gap-2"
             >
-              <h1 className="text-3xl font-black tracking-tight">Merhaba, {user?.full_name?.split(' ')[0] || 'Öğrenci'}! 👋</h1>
-              <p className="text-slate-500 text-lg">Bugün hedeflerine bir adım daha yaklaşma vakti. İşte günlük planın:</p>
+              <h1 className="text-2xl font-black tracking-tight">Merhaba, {user?.full_name?.split(' ')[0] || 'Öğrenci'}! 👋</h1>
+              <p className="text-slate-500 text-base">Bugün hedeflerine bir adım daha yaklaşma vakti. İşte günlük planın:</p>
             </motion.div>
 
             {/* Progress Grid */}

@@ -51,7 +51,30 @@ export default function ChatPage() {
     const loadChatHistory = async () => {
       try {
         const history = await chatService.getChatHistory();
-        setChatHistory(history);
+        // Group messages into conversation sessions (by date/time proximity)
+        const groupedHistory: ChatHistoryItem[] = [];
+        let currentSession: ChatHistoryItem[] = [];
+        
+        history.forEach((item, index) => {
+          if (item.role === 'user') {
+            // Start a new session with user message
+            if (currentSession.length > 0) {
+              // Save previous session with first user message as title
+              groupedHistory.push(currentSession[0]);
+            }
+            currentSession = [item];
+          } else if (currentSession.length > 0) {
+            // Add AI response to current session
+            currentSession.push(item);
+          }
+        });
+        
+        // Add last session
+        if (currentSession.length > 0) {
+          groupedHistory.push(currentSession[0]);
+        }
+        
+        setChatHistory(groupedHistory.reverse()); // Most recent first
       } catch (error) {
         console.error('Failed to load chat history:', error);
       }
@@ -127,9 +150,7 @@ export default function ChatPage() {
           >
             <ChevronLeft size={20} />
           </button>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
-            <Sparkles size={24} />
-          </div>
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto rounded-lg shadow-lg" />
           <div>
             <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
@@ -189,20 +210,23 @@ export default function ChatPage() {
                   chatHistory.map((item, index) => (
                     <div
                       key={item.id}
-                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+                      onClick={() => {
+                        // Load this conversation - for now just show alert
+                        // In future, this would load the full conversation from backend
+                        alert(`Sohbet yükleniyor: "${item.message.substring(0, 30)}..."`);
+                      }}
+                      className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-primary/5 hover:border-primary/30 cursor-pointer transition-all group"
                     >
-                      <div className="flex items-start gap-2">
-                        <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${item.role === 'assistant' ? 'bg-primary/10 text-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                          {item.role === 'assistant' ? <Bot size={14} /> : <span className="text-xs">👤</span>}
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                          <Sparkles size={16} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                            {item.role === 'assistant' ? 'UVA-AI Mentor' : 'Sen'}
+                          <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 line-clamp-1 group-hover:text-primary transition-colors">
+                            {item.message.length > 40 ? item.message.substring(0, 40) + '...' : item.message}
                           </p>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                            {item.message}
-                          </p>
-                          <p className="text-[10px] text-slate-400 mt-1">
+                          <p className="text-[11px] text-slate-400 flex items-center gap-1">
+                            <Calendar size={10} />
                             {new Date(item.created_at).toLocaleString('tr-TR', { 
                               day: 'numeric', 
                               month: 'short', 

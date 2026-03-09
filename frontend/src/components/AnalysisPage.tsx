@@ -106,9 +106,7 @@ export default function AnalysisPage() {
       {/* Top Navigation Bar */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 md:px-10 py-3 z-50 flex-shrink-0">
         <div className="flex items-center gap-4">
-          <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-            <BarChart3 size={20} />
-          </div>
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
           <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">UVA-AI Deneme Analizi</h2>
         </div>
         <div className="flex gap-3">
@@ -147,8 +145,8 @@ export default function AnalysisPage() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 lg:pb-8">
-          <div className="max-w-6xl mx-auto space-y-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-5 pb-20 lg:pb-8">
+          <div className="max-w-5xl mx-auto space-y-6">
             {/* Welcome & Upload Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <motion.div

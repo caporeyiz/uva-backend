@@ -35,8 +35,8 @@ export default function LandingPage() {
       <div className="layout-container flex h-full grow flex-col">
         {/* Header */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="flex items-center gap-2 text-primary">
-            <Sparkles size={28} className="font-bold" />
+          <div className="flex items-center gap-2">
+            <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
             <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
           </div>
 

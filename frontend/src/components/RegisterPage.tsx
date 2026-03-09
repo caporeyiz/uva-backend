@@ -77,7 +77,7 @@ export default function RegisterPage() {
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
                     <div className="relative z-10 flex items-center gap-2">
-                        <Sparkles size={28} className="text-primary font-bold" />
+                        <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
                         <h2 className="text-xl font-bold tracking-tight">UVA-AI Mentor</h2>
                     </div>
 
