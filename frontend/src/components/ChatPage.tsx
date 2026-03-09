@@ -22,7 +22,7 @@ import {
   ChevronLeft,
   Loader2
 } from 'lucide-react';
-import { chatService, ChatMessage } from '../services/chat.service';
+import { chatService, ChatMessage, ChatHistoryItem } from '../services/chat.service';
 
 interface Message {
   id: string;
@@ -41,9 +41,23 @@ export default function ChatPage() {
       timestamp: '10:42'
     }
   ]);
+  const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      try {
+        const history = await chatService.getChatHistory();
+        setChatHistory(history);
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+      }
+    };
+    loadChatHistory();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -128,6 +142,12 @@ export default function ChatPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setShowHistory(!showHistory)}
+            className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${showHistory ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'}`}
+          >
+            <History size={20} />
+          </button>
           <button className="hidden sm:flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors">
             <Settings size={20} />
           </button>
@@ -141,8 +161,67 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Chat Area */}
-      <main ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-8 lg:px-20 xl:px-40 space-y-8 scroll-smooth">
+      <div className="flex flex-1 overflow-hidden">
+        {/* Chat History Sidebar */}
+        <AnimatePresence>
+          {showHistory && (
+            <motion.aside
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              className="w-80 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto"
+            >
+              <div className="p-4 border-b border-slate-200 dark:border-slate-800">
+                <h3 className="font-bold text-lg flex items-center gap-2">
+                  <History size={20} className="text-primary" />
+                  Sohbet Geçmişi
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Önceki konuşmalarınız
+                </p>
+              </div>
+              <div className="p-4 space-y-2">
+                {chatHistory.length === 0 ? (
+                  <p className="text-sm text-slate-400 text-center py-8">
+                    Henüz sohbet geçmişi yok
+                  </p>
+                ) : (
+                  chatHistory.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${item.role === 'assistant' ? 'bg-primary/10 text-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                          {item.role === 'assistant' ? <Bot size={14} /> : <span className="text-xs">👤</span>}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            {item.role === 'assistant' ? 'UVA-AI Mentor' : 'Sen'}
+                          </p>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                            {item.message}
+                          </p>
+                          <p className="text-[10px] text-slate-400 mt-1">
+                            {new Date(item.created_at).toLocaleString('tr-TR', { 
+                              day: 'numeric', 
+                              month: 'short', 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        {/* Chat Area */}
+        <main ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-8 lg:px-20 xl:px-40 space-y-8 scroll-smooth">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
@@ -201,6 +280,7 @@ export default function ChatPage() {
           )}
         </AnimatePresence>
       </main>
+      </div>
 
       {/* Bottom Controls */}
       <footer className="p-4 lg:px-20 xl:px-40 bg-white dark:bg-background-dark/95 border-t border-slate-200 dark:border-slate-800">
