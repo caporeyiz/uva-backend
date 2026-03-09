@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { 
   Sparkles, 
@@ -18,13 +19,8 @@ import {
 } from 'lucide-react';
 import { authService } from '../services/auth.service';
 
-interface LoginPageProps {
-  onLogin: () => void;
-  onRegister: () => void;
-  onBack: () => void;
-}
-
-export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProps) {
+export default function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +33,7 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
 
     try {
       await authService.login({ email, password });
-      onLogin();
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
     } finally {
@@ -93,7 +89,7 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
         {/* Right Side - Form */}
         <div className="p-8 md:p-12 flex flex-col justify-center">
           <button 
-            onClick={onBack}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors text-sm font-medium mb-8 w-fit"
           >
             <ChevronLeft size={16} />
@@ -194,7 +190,7 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
           <p className="text-center mt-10 text-slate-500 dark:text-slate-400 text-sm">
             Hesabın yok mu? {' '}
             <button 
-              onClick={onRegister}
+              onClick={() => navigate('/register')}
               className="text-primary font-bold hover:underline"
             >
               Ücretsiz Kayıt Ol

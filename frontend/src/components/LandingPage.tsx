@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   Sparkles,
@@ -25,7 +26,8 @@ interface LandingPageProps {
   onRegister: () => void;
 }
 
-export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
+export default function LandingPage() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
@@ -46,13 +48,13 @@ export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
 
           <div className="flex gap-3">
             <button
-              onClick={onLogin}
+              onClick={() => navigate('/login')}
               className="hidden sm:flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-bold transition-all hover:bg-slate-300 dark:hover:bg-slate-700"
             >
               <span>Giriş Yap</span>
             </button>
             <button
-              onClick={onRegister}
+              onClick={() => navigate('/register')}
               className="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all"
             >
               <span>Ücretsiz Başla</span>
@@ -78,8 +80,8 @@ export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
             <a className="text-lg font-medium" href="#hakkimizda" onClick={() => setIsMenuOpen(false)}>Hakkımızda</a>
             <hr className="border-slate-200 dark:border-slate-800" />
             <div className="flex flex-col gap-3">
-              <button onClick={onLogin} className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-xl">Giriş Yap</button>
-              <button onClick={onRegister} className="w-full py-4 bg-primary text-white font-bold rounded-xl">Ücretsiz Başla</button>
+              <button onClick={() => navigate('/login')} className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-xl">Giriş Yap</button>
+              <button onClick={() => navigate('/register')} className="w-full py-4 bg-primary text-white font-bold rounded-xl">Ücretsiz Başla</button>
             </div>
           </motion.div>
         )}
@@ -109,7 +111,7 @@ export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button
-                      onClick={onRegister}
+                      onClick={() => navigate('/register')}
                       className="flex min-w-[200px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all"
                     >
                       Hemen Ücretsiz Başla
@@ -315,7 +317,7 @@ export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
                   </ul>
                   <div className="pt-4">
                     <button
-                      onClick={onRegister}
+                      onClick={() => navigate('/register')}
                       className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
                     >
                       AI Sohbeti Dene
@@ -336,7 +338,7 @@ export default function LandingPage({ onLogin, onRegister }: LandingPageProps) {
               <p className="text-white/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto">Binlerce öğrenci AI Mentor ile netlerini artırıyor. Sen de bu başarının bir parçası olmaya hazır mısın?</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  onClick={onRegister}
+                  onClick={() => navigate('/register')}
                   className="bg-white text-primary px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-100 transition-all shadow-xl"
                 >
                   Ücretsiz Hesabını Oluştur

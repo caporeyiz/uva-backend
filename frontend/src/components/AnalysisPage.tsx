@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   BarChart3,
@@ -24,11 +25,8 @@ import {
   LogOut,
   Loader2
 } from 'lucide-react';
-
-interface AnalysisPageProps {
-  onNavigate: (view: 'landing' | 'dashboard' | 'analysis' | 'chat' | 'login' | 'register') => void;
-  onLogout: () => void;
-}
+import { userService, User as UserType } from '../services/user.service';
+import { authService } from '../services/auth.service';
 
 interface Prescription {
   subject: string;
@@ -51,7 +49,27 @@ const SidebarItem = ({ icon: Icon, label, active = false, onClick }: { icon: any
   </button>
 );
 
-export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps) {
+export default function AnalysisPage() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<UserType | null>(null);
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/');
+  };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await userService.getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([
     { subject: "Matematik", status: "Acil", statusColor: "bg-orange-500", title: "Türev - Max/Min", desc: "Son 3 denemede bu konudan 4 soru kaçırdın. Konu özetini incele." },
     { subject: "Biyoloji", status: "Orta", statusColor: "bg-blue-400", title: "Protein Sentezi", desc: "Enzimlerle ilgili teknik bir bilgi hatası saptandı. 20dk tekrar." },
@@ -99,14 +117,14 @@ export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps
           </button>
           <div className="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-800">
             <div className="hidden md:block text-right">
-              <p className="text-sm font-bold leading-none">Deniz Yılmaz</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hedef: Tıp Fakültesi</p>
+              <p className="text-sm font-bold leading-none">{user?.full_name || 'Yükleniyor...'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hedef: {user?.target_university || 'Belirtilmemiş'}</p>
             </div>
             <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <User size={20} className="text-primary" />
             </div>
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
             >
               <LogOut size={20} />
@@ -119,9 +137,9 @@ export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps
         {/* Sidebar Navigation */}
         <aside className="hidden lg:flex w-64 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 gap-2">
           <nav className="flex flex-col gap-1">
-            <SidebarItem icon={LayoutDashboard} label="Genel Bakış" onClick={() => onNavigate('dashboard')} />
+            <SidebarItem icon={LayoutDashboard} label="Genel Bakış" onClick={() => navigate('/dashboard')} />
             <SidebarItem icon={BarChart3} label="Deneme Analizi" active />
-            <SidebarItem icon={Sparkles} label="AI Sohbet" onClick={() => onNavigate('chat')} />
+            <SidebarItem icon={Sparkles} label="AI Sohbet" onClick={() => navigate('/chat')} />
             <SidebarItem icon={BookOpen} label="Hata Havuzu" />
             <SidebarItem icon={GraduationCap} label="Çalışma Planı" />
             <SidebarItem icon={Settings} label="Ayarlar" />
@@ -362,14 +380,14 @@ export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps
       {/* Mobile Navigation Bottom */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-around items-center z-50">
         <button
-          onClick={() => onNavigate('dashboard')}
+          onClick={() => navigate('/dashboard')}
           className="text-slate-400 flex flex-col items-center gap-1"
         >
           <LayoutDashboard size={24} />
           <span className="text-[10px] font-bold">Ana Sayfa</span>
         </button>
         <button
-          onClick={() => onNavigate('analysis')}
+          onClick={() => navigate('/analysis')}
           className="text-primary flex flex-col items-center gap-1"
         >
           <BarChart3 size={24} />
@@ -377,7 +395,7 @@ export default function AnalysisPage({ onNavigate, onLogout }: AnalysisPageProps
         </button>
         <div className="relative -top-6">
           <button
-            onClick={() => onNavigate('chat')}
+            onClick={() => navigate('/chat')}
             className="bg-primary size-14 rounded-full shadow-lg shadow-primary/40 flex items-center justify-center text-white"
           >
             <Sparkles size={32} />

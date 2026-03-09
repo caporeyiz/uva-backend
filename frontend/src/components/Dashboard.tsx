@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard,
@@ -26,16 +27,12 @@ import {
   Loader2
 } from 'lucide-react';
 import { userService, User as UserType } from '../services/user.service';
+import { authService } from '../services/auth.service';
 
 interface Task {
   id: string;
   title: string;
   completed: boolean;
-}
-
-interface DashboardProps {
-  onNavigate: (view: 'landing' | 'dashboard' | 'analysis' | 'chat' | 'login' | 'register') => void;
-  onLogout: () => void;
 }
 
 const SidebarItem = ({ icon: Icon, label, active = false, onClick }: { icon: any, label: string, active?: boolean, onClick?: () => void }) => (
@@ -73,7 +70,13 @@ const StatCard = ({ label, value, icon: Icon, trend, trendColor }: { label: stri
   </motion.div>
 );
 
-export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/');
+  };
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -171,7 +174,7 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
               <Settings size={20} />
             </button>
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-500/10 hover:text-red-500 transition-colors"
             >
               <LogOut size={20} />
@@ -196,9 +199,9 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
           <div className="flex flex-col gap-2">
             <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Menü</p>
             <nav className="flex flex-col gap-1">
-              <SidebarItem icon={LayoutDashboard} label="Dashboard" active onClick={() => onNavigate('dashboard')} />
-              <SidebarItem icon={BarChart3} label="Deneme Analizi" onClick={() => onNavigate('analysis')} />
-              <SidebarItem icon={Sparkles} label="AI Sohbet" onClick={() => onNavigate('chat')} />
+              <SidebarItem icon={LayoutDashboard} label="Dashboard" active onClick={() => navigate('/dashboard')} />
+              <SidebarItem icon={BarChart3} label="Deneme Analizi" onClick={() => navigate('/analysis')} />
+              <SidebarItem icon={Sparkles} label="AI Sohbet" onClick={() => navigate('/chat')} />
               <SidebarItem icon={BookOpen} label="Kitaplarım" />
               <SidebarItem icon={GraduationCap} label="Hoca Önerileri" />
             </nav>
@@ -285,7 +288,7 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
                 </div>
               </div>
               <button
-                onClick={() => onNavigate('chat')}
+                onClick={() => navigate('/chat')}
                 className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition-all"
               >
                 AI ile Konuş
@@ -404,7 +407,7 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
                 </div>
                 <div className="p-6 pt-0">
                   <button
-                    onClick={() => onNavigate('analysis')}
+                    onClick={() => navigate('/analysis')}
                     className="w-full py-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                   >
                     Detaylı Analiz Gör
@@ -419,14 +422,14 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
       {/* Mobile Navigation Bottom */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-around items-center z-50">
         <button
-          onClick={() => onNavigate('dashboard')}
+          onClick={() => navigate('/dashboard')}
           className="text-primary flex flex-col items-center gap-1"
         >
           <LayoutDashboard size={24} />
           <span className="text-[10px] font-bold">Ana Sayfa</span>
         </button>
         <button
-          onClick={() => onNavigate('analysis')}
+          onClick={() => navigate('/analysis')}
           className="text-slate-400 flex flex-col items-center gap-1"
         >
           <BarChart3 size={24} />
@@ -434,7 +437,7 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
         </button>
         <div className="relative -top-6">
           <button
-            onClick={() => onNavigate('chat')}
+            onClick={() => navigate('/chat')}
             className="bg-primary size-14 rounded-full shadow-lg shadow-primary/40 flex items-center justify-center text-white"
           >
             <Sparkles size={32} />

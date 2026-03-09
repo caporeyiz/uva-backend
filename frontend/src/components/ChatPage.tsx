@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Sparkles,
@@ -30,11 +31,8 @@ interface Message {
   timestamp: string;
 }
 
-interface ChatPageProps {
-  onNavigate: (view: 'landing' | 'dashboard' | 'analysis' | 'chat' | 'login' | 'register') => void;
-}
-
-export default function ChatPage({ onNavigate }: ChatPageProps) {
+export default function ChatPage() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -104,7 +102,7 @@ export default function ChatPage({ onNavigate }: ChatPageProps) {
       <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4 z-10">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => onNavigate('dashboard')}
+            onClick={() => navigate('/dashboard')}
             className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 mr-1"
           >
             <ChevronLeft size={20} />

@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
     Sparkles,
@@ -19,13 +20,8 @@ import {
 } from 'lucide-react';
 import { authService } from '../services/auth.service';
 
-interface RegisterPageProps {
-    onRegister: () => void;
-    onLogin: () => void;
-    onBack: () => void;
-}
-
-export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPageProps) {
+export default function RegisterPage() {
+    const navigate = useNavigate();
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -50,7 +46,7 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                 password, 
                 full_name: fullName 
             });
-            onRegister();
+            navigate('/dashboard');
         } catch (err: any) {
             const errorDetail = err.response?.data?.detail;
             if (errorDetail === 'Email already registered') {
@@ -121,7 +117,7 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                 {/* Right Side - Form */}
                 <div className="p-8 md:p-12 flex flex-col justify-center">
                     <button
-                        onClick={onBack}
+                        onClick={() => navigate('/')}
                         className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors text-sm font-medium mb-8 w-fit"
                     >
                         <ChevronLeft size={16} />
@@ -233,7 +229,7 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                     <p className="text-center mt-6 text-slate-500 dark:text-slate-400 text-sm">
                         Zaten hesabın var mı? {' '}
                         <button
-                            onClick={onLogin}
+                            onClick={() => navigate('/login')}
                             className="text-primary font-bold hover:underline"
                         >
                             Giriş Yap
