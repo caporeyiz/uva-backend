@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Sparkles, 
@@ -12,8 +12,11 @@ import {
   ArrowRight, 
   Github, 
   Chrome,
-  ChevronLeft
+  ChevronLeft,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
+import { authService } from '../services/auth.service';
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -22,6 +25,26 @@ interface LoginPageProps {
 }
 
 export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProps) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await authService.login({ email, password });
+      onLogin();
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center bg-background-light dark:bg-background-dark font-display p-6 overflow-hidden">
       {/* Background Orbs */}
@@ -82,7 +105,14 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
             <p className="text-slate-500 dark:text-slate-400">Hesabına erişmek için bilgilerinle giriş yap.</p>
           </div>
 
-          <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-700 dark:text-red-400">
+              <AlertCircle size={20} />
+              <span className="text-sm font-medium">{error}</span>
+            </div>
+          )}
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">E-posta</label>
               <div className="relative group">
@@ -92,7 +122,10 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
                 <input 
                   type="email" 
                   placeholder="isim@ornek.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                  disabled={isLoading}
                   required
                 />
               </div>
@@ -110,7 +143,10 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
                 <input 
                   type="password" 
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                  disabled={isLoading}
                   required
                 />
               </div>
@@ -118,10 +154,20 @@ export default function LoginPage({ onLogin, onRegister, onBack }: LoginPageProp
 
             <button 
               type="submit"
-              className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+              disabled={isLoading}
+              className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              Giriş Yap
-              <ArrowRight size={20} />
+              {isLoading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Giriş Yapılıyor...
+                </>
+              ) : (
+                <>
+                  Giriş Yap
+                  <ArrowRight size={20} />
+                </>
+              )}
             </button>
           </form>
 

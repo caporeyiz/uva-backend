@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
     Sparkles,
@@ -13,8 +13,11 @@ import {
     ArrowRight,
     Chrome,
     ChevronLeft,
-    CheckCircle2
+    CheckCircle2,
+    Loader2,
+    AlertCircle
 } from 'lucide-react';
+import { authService } from '../services/auth.service';
 
 interface RegisterPageProps {
     onRegister: () => void;
@@ -23,6 +26,31 @@ interface RegisterPageProps {
 }
 
 export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPageProps) {
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
+
+        try {
+            await authService.register({ 
+                email, 
+                password, 
+                full_name: fullName 
+            });
+            onRegister();
+        } catch (err: any) {
+            setError(err.response?.data?.detail || 'Kayıt başarısız. Lütfen tekrar deneyin.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="relative min-h-screen w-full flex items-center justify-center bg-background-light dark:bg-background-dark font-display p-6 overflow-hidden">
             {/* Background Orbs */}
@@ -91,7 +119,14 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                         <p className="text-slate-500 dark:text-slate-400">Başarıya giden yolda ilk adımını bugün at.</p>
                     </div>
 
-                    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onRegister(); }}>
+                    {error && (
+                        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-700 dark:text-red-400">
+                            <AlertCircle size={20} />
+                            <span className="text-sm font-medium">{error}</span>
+                        </div>
+                    )}
+
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Ad Soyad</label>
                             <div className="relative group">
@@ -101,7 +136,10 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                                 <input
                                     type="text"
                                     placeholder="Ahmet Yılmaz"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    disabled={isLoading}
                                     required
                                 />
                             </div>
@@ -116,7 +154,10 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                                 <input
                                     type="email"
                                     placeholder="ahmet@ornek.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    disabled={isLoading}
                                     required
                                 />
                             </div>
@@ -131,7 +172,10 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                                 <input
                                     type="password"
                                     placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    disabled={isLoading}
                                     required
                                 />
                             </div>
@@ -139,10 +183,20 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
 
                         <button
                             type="submit"
-                            className="w-full bg-primary text-white py-3.5 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+                            disabled={isLoading}
+                            className="w-full bg-primary text-white py-3.5 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                         >
-                            Hemen Başla
-                            <ArrowRight size={20} />
+                            {isLoading ? (
+                                <>
+                                    <Loader2 size={20} className="animate-spin" />
+                                    Kayıt Yapılıyor...
+                                </>
+                            ) : (
+                                <>
+                                    Hemen Başla
+                                    <ArrowRight size={20} />
+                                </>
+                            )}
                         </button>
                     </form>
 

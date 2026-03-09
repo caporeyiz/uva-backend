@@ -26,7 +26,17 @@ export interface AuthResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await api.post('/auth/login', credentials);
+    // Backend expects OAuth2PasswordRequestForm (form-data)
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.email);
+    formData.append('password', credentials.password);
+    
+    const response = await api.post('/auth/login', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    
     const { access_token, refresh_token } = response.data;
     
     localStorage.setItem('access_token', access_token);
