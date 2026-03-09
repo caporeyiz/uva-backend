@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// Always use HTTPS for production - ignore env variable if it's HTTP
-const envUrl = import.meta.env.VITE_API_URL;
-const API_URL = (envUrl && envUrl.startsWith('https://')) ? envUrl : 'https://api.uvamentor.sbs';
+// DIAGNOSTIC: Hardcoded HTTPS - if live site still shows http://, wrong deployment is active
+const API_URL = 'https://api.uvamentor.sbs';
 
 export const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
