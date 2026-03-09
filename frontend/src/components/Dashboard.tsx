@@ -159,9 +159,9 @@ export default function Dashboard() {
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       {/* Top Navigation Bar */}
       <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 z-50 flex-shrink-0">
-        <div className="flex items-center gap-4">
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
-          <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
+        <div className="flex items-center gap-3">
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto" />
+          <h2 className="text-base font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
         </div>
         <div className="flex flex-1 justify-end gap-4 items-center">
           <div className="hidden md:flex gap-2">
@@ -212,8 +212,8 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 md:p-5 lg:p-6 overflow-y-auto max-w-5xl mx-auto w-full pb-20 lg:pb-8">
-          <div className="flex flex-col gap-6">
+        <main className="flex-1 p-3 md:p-4 lg:p-5 overflow-y-auto max-w-4xl mx-auto w-full pb-20 lg:pb-8">
+          <div className="flex flex-col gap-4">
             {/* Welcome Section */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}

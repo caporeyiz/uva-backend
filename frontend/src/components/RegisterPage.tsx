@@ -76,8 +76,8 @@ export default function RegisterPage() {
                 <div className="hidden lg:flex flex-col justify-between p-12 bg-slate-900 relative overflow-hidden text-white">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
-                    <div className="relative z-10 flex items-center gap-2">
-                        <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
+                    <div className="relative z-10 flex items-center gap-3">
+                        <img src="/uva-logo.png" alt="UVA Logo" className="h-12 w-auto" />
                         <h2 className="text-xl font-bold tracking-tight">UVA-AI Mentor</h2>
                     </div>
 

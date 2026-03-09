@@ -45,6 +45,7 @@ export default function ChatPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadedConversationId, setLoadedConversationId] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -87,6 +88,44 @@ export default function ChatPage() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isLoading]);
+
+  const loadConversation = async (conversationId: number) => {
+    try {
+      // Load full conversation from backend
+      // For now, we'll fetch all history and filter by conversation session
+      const history = await chatService.getChatHistory();
+      
+      // Find all messages in this conversation session
+      const conversationMessages: Message[] = [];
+      let foundStart = false;
+      
+      for (const item of history) {
+        if (item.id === conversationId) {
+          foundStart = true;
+        }
+        
+        if (foundStart) {
+          conversationMessages.push({
+            id: item.id.toString(),
+            role: item.role === 'assistant' ? 'ai' : 'user',
+            content: item.message,
+            timestamp: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Stop at next user message (new conversation)
+          if (item.role === 'user' && item.id !== conversationId) {
+            break;
+          }
+        }
+      }
+      
+      setMessages(conversationMessages);
+      setLoadedConversationId(conversationId);
+      setShowHistory(false);
+    } catch (error) {
+      console.error('Failed to load conversation:', error);
+    }
+  };
 
   const handleSendMessage = async (text?: string) => {
     const messageText = text || inputValue;
@@ -150,7 +189,7 @@ export default function ChatPage() {
           >
             <ChevronLeft size={20} />
           </button>
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto rounded-lg shadow-lg" />
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-12 w-auto rounded-lg shadow-lg" />
           <div>
             <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
@@ -210,12 +249,8 @@ export default function ChatPage() {
                   chatHistory.map((item, index) => (
                     <div
                       key={item.id}
-                      onClick={() => {
-                        // Load this conversation - for now just show alert
-                        // In future, this would load the full conversation from backend
-                        alert(`Sohbet yükleniyor: "${item.message.substring(0, 30)}..."`);
-                      }}
-                      className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-primary/5 hover:border-primary/30 cursor-pointer transition-all group"
+                      onClick={() => loadConversation(item.id)}
+                      className={`p-4 rounded-lg border transition-all group cursor-pointer ${loadedConversationId === item.id ? 'bg-primary/10 border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-primary/5 hover:border-primary/30'}`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
