@@ -144,15 +144,8 @@ export default function ChatPage() {
     const messageText = text || inputValue;
     if (!messageText.trim() || isLoading) return;
 
-    // If in history mode, start a new conversation
+    // If in history mode, exit history mode but keep the conversation
     if (isHistoryMode) {
-      setMessages([{
-        id: '1',
-        role: 'ai',
-        content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
-      setLoadedConversationId(null);
       setIsHistoryMode(false);
     }
 
@@ -214,7 +207,7 @@ export default function ChatPage() {
           >
             <ChevronLeft size={20} />
           </button>
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto rounded-lg shadow-lg" />
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-16 w-auto rounded-lg shadow-lg" />
           <div>
             <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
