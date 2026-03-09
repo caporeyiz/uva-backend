@@ -105,7 +105,7 @@ export default function ChatPage() {
   return (
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       {/* Header Section */}
-      <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4 z-10">
+      <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4 z-10 flex-shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}

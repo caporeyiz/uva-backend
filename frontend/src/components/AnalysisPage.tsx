@@ -102,9 +102,9 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       {/* Top Navigation Bar */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 md:px-10 py-3 sticky top-0 z-50">
+      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 md:px-10 py-3 z-50 flex-shrink-0">
         <div className="flex items-center gap-4">
           <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
             <BarChart3 size={20} />
@@ -147,7 +147,7 @@ export default function AnalysisPage() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 lg:pb-8">
           <div className="max-w-6xl mx-auto space-y-8">
             {/* Welcome & Upload Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">

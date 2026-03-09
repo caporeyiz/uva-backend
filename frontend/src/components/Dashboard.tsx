@@ -156,9 +156,9 @@ export default function Dashboard() {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       {/* Top Navigation Bar */}
-      <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 sticky top-0 z-50">
+      <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 z-50 flex-shrink-0">
         <div className="flex items-center gap-4">
           <div className="text-primary">
             <Zap size={32} fill="currentColor" />
@@ -214,7 +214,7 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-6xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-6xl mx-auto w-full pb-20 lg:pb-8">
           <div className="flex flex-col gap-6">
             {/* Welcome Section */}
             <motion.div
