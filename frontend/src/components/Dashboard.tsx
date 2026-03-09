@@ -25,6 +25,7 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react';
+import { userService, User as UserType } from '../services/user.service';
 
 interface Task {
   id: string;
@@ -73,6 +74,8 @@ const StatCard = ({ label, value, icon: Icon, trend, trendColor }: { label: stri
 );
 
 export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem('yks_tasks');
     return saved ? JSON.parse(saved) : [
@@ -89,6 +92,21 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
+
+  // Fetch user data on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await userService.getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      } finally {
+        setIsLoadingUser(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('yks_tasks', JSON.stringify(tasks));
@@ -161,8 +179,8 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
           </div>
           <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-800">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold">Emre Yılmaz</p>
-              <p className="text-xs text-slate-500">Sayısal Öğrencisi</p>
+              <p className="text-sm font-bold">{user?.full_name || 'Yükleniyor...'}</p>
+              <p className="text-xs text-slate-500">{user?.target_department || 'Öğrenci'}</p>
             </div>
             <div
               className="size-10 rounded-full bg-primary/20 bg-cover bg-center border-2 border-primary"
@@ -201,7 +219,7 @@ export default function Dashboard({ onNavigate, onLogout }: DashboardProps) {
               animate={{ opacity: 1, x: 0 }}
               className="flex flex-col gap-2"
             >
-              <h1 className="text-3xl font-black tracking-tight">Merhaba, Emre! 👋</h1>
+              <h1 className="text-3xl font-black tracking-tight">Merhaba, {user?.full_name?.split(' ')[0] || 'Öğrenci'}! 👋</h1>
               <p className="text-slate-500 text-lg">Bugün hedeflerine bir adım daha yaklaşma vakti. İşte günlük planın:</p>
             </motion.div>
 
