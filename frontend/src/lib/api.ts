@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// DIAGNOSTIC: Hardcoded HTTPS - if live site still shows http://, wrong deployment is active
 const API_URL = 'https://api.uvamentor.sbs';
+console.log('[UVA-BUILD-V2] API_URL =', API_URL);
 
 export const api = axios.create({
   baseURL: `${API_URL}/api/v1`,
