@@ -20,7 +20,8 @@ import {
   Paperclip,
   Send,
   ChevronLeft,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { chatService, ChatMessage, ChatHistoryItem } from '../services/chat.service';
 
@@ -46,6 +47,7 @@ export default function ChatPage() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loadedConversationId, setLoadedConversationId] = useState<number | null>(null);
+  const [isHistoryMode, setIsHistoryMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -131,6 +133,7 @@ export default function ChatPage() {
       
       setMessages(conversationMessages);
       setLoadedConversationId(conversationId);
+      setIsHistoryMode(true);
       setShowHistory(false);
     } catch (error) {
       console.error('Failed to load conversation:', error);
@@ -140,6 +143,18 @@ export default function ChatPage() {
   const handleSendMessage = async (text?: string) => {
     const messageText = text || inputValue;
     if (!messageText.trim() || isLoading) return;
+
+    // If in history mode, start a new conversation
+    if (isHistoryMode) {
+      setMessages([{
+        id: '1',
+        role: 'ai',
+        content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setLoadedConversationId(null);
+      setIsHistoryMode(false);
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -199,7 +214,7 @@ export default function ChatPage() {
           >
             <ChevronLeft size={20} />
           </button>
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto rounded-lg shadow-lg" />
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto rounded-lg shadow-lg" />
           <div>
             <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
@@ -219,17 +234,24 @@ export default function ChatPage() {
             <History size={20} />
           </button>
           <button 
-            onClick={() => {
-              setMessages([{
-                id: '1',
-                role: 'ai',
-                content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              }]);
-              setLoadedConversationId(null);
+            onClick={async () => {
+              try {
+                await chatService.deleteAllChatHistory();
+                setMessages([{
+                  id: '1',
+                  role: 'ai',
+                  content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }]);
+                setLoadedConversationId(null);
+                setIsHistoryMode(false);
+                setChatHistory([]);
+              } catch (error) {
+                console.error('Failed to delete chat history:', error);
+              }
             }}
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white transition-colors"
-            title="Sohbeti Temizle"
+            title="Tüm Sohbetleri Sil"
           >
             <FileEdit size={20} />
           </button>
@@ -274,14 +296,19 @@ export default function ChatPage() {
                   chatHistory.map((item, index) => (
                     <div
                       key={item.id}
-                      onClick={() => loadConversation(item.id)}
-                      className={`p-4 rounded-lg border transition-all group cursor-pointer ${loadedConversationId === item.id ? 'bg-primary/10 border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-primary/5 hover:border-primary/30'}`}
+                      className={`p-4 rounded-lg border transition-all group ${loadedConversationId === item.id ? 'bg-primary/10 border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-primary/5 hover:border-primary/30'}`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <div 
+                          onClick={() => loadConversation(item.id)}
+                          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors cursor-pointer"
+                        >
                           <Sparkles size={16} />
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div 
+                          onClick={() => loadConversation(item.id)}
+                          className="flex-1 min-w-0 cursor-pointer"
+                        >
                           <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 line-clamp-1 group-hover:text-primary transition-colors">
                             {item.message.length > 40 ? item.message.substring(0, 40) + '...' : item.message}
                           </p>
@@ -295,6 +322,57 @@ export default function ChatPage() {
                             })}
                           </p>
                         </div>
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              await chatService.deleteConversation(item.id);
+                              // Reload chat history
+                              const history = await chatService.getChatHistory();
+                              const groupedHistory: ChatHistoryItem[] = [];
+                              const SESSION_GAP_MINUTES = 30;
+                              
+                              if (history.length > 0) {
+                                let sessionStart = history[0];
+                                let lastMessageTime = new Date(history[0].created_at);
+                                
+                                for (let i = 1; i < history.length; i++) {
+                                  const currentTime = new Date(history[i].created_at);
+                                  const timeDiff = (currentTime.getTime() - lastMessageTime.getTime()) / (1000 * 60);
+                                  
+                                  if (timeDiff > SESSION_GAP_MINUTES) {
+                                    groupedHistory.push(sessionStart);
+                                    sessionStart = history[i];
+                                  }
+                                  
+                                  lastMessageTime = currentTime;
+                                }
+                                
+                                groupedHistory.push(sessionStart);
+                              }
+                              
+                              setChatHistory(groupedHistory.reverse());
+                              
+                              // If deleted conversation was loaded, start new chat
+                              if (loadedConversationId === item.id) {
+                                setMessages([{
+                                  id: '1',
+                                  role: 'ai',
+                                  content: "Merhaba! Bugün fizik dünyasına dalmaya hazır mısın? Newton'un hareket yasalarını mı inceleyelim yoksa sınav öncesi biraz motivasyona mı ihtiyacın var?",
+                                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                }]);
+                                setLoadedConversationId(null);
+                                setIsHistoryMode(false);
+                              }
+                            } catch (error) {
+                              console.error('Failed to delete conversation:', error);
+                            }
+                          }}
+                          className="flex-shrink-0 w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          title="Bu Sohbeti Sil"
+                        >
+                          <X size={14} />
+                        </button>
                       </div>
                     </div>
                   ))

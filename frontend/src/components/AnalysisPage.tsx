@@ -105,9 +105,9 @@ export default function AnalysisPage() {
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       {/* Top Navigation Bar */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 md:px-6 py-2 z-50 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <img src="/uva-logo.png" alt="UVA Logo" className="h-8 w-auto" />
-          <h2 className="text-slate-900 dark:text-slate-100 text-sm font-bold leading-tight tracking-tight">UVA-AI Deneme Analizi</h2>
+        <div className="flex items-center gap-3">
+          <img src="/uva-logo.png" alt="UVA Logo" className="h-10 w-auto" />
+          <h2 className="text-slate-900 dark:text-slate-100 text-base font-bold leading-tight tracking-tight">UVA-AI Deneme Analizi</h2>
         </div>
         <div className="flex gap-3">
           <button className="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors">

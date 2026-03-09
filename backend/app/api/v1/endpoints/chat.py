@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta
 from openai import OpenAI
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from app.core.config import settings
 from app.core.database import get_db
 from app.api.dependencies import get_current_user
@@ -154,3 +154,53 @@ async def get_chat_history(
     history = list(reversed(history))
     
     return ChatHistoryResponse(history=history)
+
+@router.delete("/history")
+async def delete_all_chat_history(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete all chat history for the current user
+    """
+    await db.execute(
+        delete(ChatHistory).where(ChatHistory.user_id == current_user.id)
+    )
+    await db.commit()
+    
+    return {"message": "All chat history deleted successfully"}
+
+@router.delete("/history/{message_id}")
+async def delete_chat_message(
+    message_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a specific chat message and related conversation messages
+    """
+    # First, get the message to find its timestamp
+    result = await db.execute(
+        select(ChatHistory)
+        .where(ChatHistory.id == message_id)
+        .where(ChatHistory.user_id == current_user.id)
+    )
+    message = result.scalar_one_or_none()
+    
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Delete messages within 30-minute window of this message
+    message_time = message.created_at
+    time_window_start = message_time - timedelta(minutes=30)
+    time_window_end = message_time + timedelta(minutes=30)
+    
+    await db.execute(
+        delete(ChatHistory)
+        .where(ChatHistory.user_id == current_user.id)
+        .where(ChatHistory.created_at >= time_window_start)
+        .where(ChatHistory.created_at <= time_window_end)
+    )
+    await db.commit()
+    
+    return {"message": "Conversation deleted successfully"}

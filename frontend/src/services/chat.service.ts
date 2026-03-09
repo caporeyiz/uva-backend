@@ -46,5 +46,23 @@ export const chatService = {
       console.error('Failed to fetch chat history:', error);
       throw error;
     }
+  },
+
+  async deleteAllChatHistory(): Promise<void> {
+    try {
+      await api.delete('/chat/history');
+    } catch (error) {
+      console.error('Failed to delete all chat history:', error);
+      throw error;
+    }
+  },
+
+  async deleteConversation(messageId: number): Promise<void> {
+    try {
+      await api.delete(`/chat/history/${messageId}`);
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+      throw error;
+    }
   }
 };
