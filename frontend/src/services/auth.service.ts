@@ -46,13 +46,14 @@ export const authService = {
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await api.post('/auth/register', data);
-    const { access_token, refresh_token } = response.data;
+    // Register user (returns UserResponse, not tokens)
+    await api.post('/auth/register', data);
     
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
-    
-    return response.data;
+    // Auto-login after successful registration
+    return await this.login({
+      email: data.email,
+      password: data.password
+    });
   },
 
   async logout(): Promise<void> {

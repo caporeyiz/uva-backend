@@ -35,6 +35,13 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        // Validation
+        if (password.length < 8) {
+            setError('Şifre en az 8 karakter olmalıdır.');
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -45,7 +52,14 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
             });
             onRegister();
         } catch (err: any) {
-            setError(err.response?.data?.detail || 'Kayıt başarısız. Lütfen tekrar deneyin.');
+            const errorDetail = err.response?.data?.detail;
+            if (errorDetail === 'Email already registered') {
+                setError('Bu e-posta adresi zaten kayıtlı. Giriş yapmayı deneyin.');
+            } else if (typeof errorDetail === 'string') {
+                setError(errorDetail);
+            } else {
+                setError('Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -176,9 +190,11 @@ export default function RegisterPage({ onRegister, onLogin, onBack }: RegisterPa
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     disabled={isLoading}
+                                    minLength={8}
                                     required
                                 />
                             </div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 ml-1">En az 8 karakter olmalıdır</p>
                         </div>
 
                         <button
