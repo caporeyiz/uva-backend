@@ -78,7 +78,7 @@ export default function RegisterPage() {
 
                     <div className="relative z-10 flex items-center gap-2">
                         <Sparkles size={28} className="text-primary font-bold" />
-                        <h2 className="text-xl font-bold tracking-tight">YKS-AI Mentor</h2>
+                        <h2 className="text-xl font-bold tracking-tight">UVA-AI Mentor</h2>
                     </div>
 
                     <div className="relative z-10 space-y-8">
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                         <ul className="space-y-4">
                             {[
                                 "Kişiselleştirilmiş Çalışma Programı",
-                                "7/24 AI Mentor Desteği",
+                                "7/24 UVA-AI Mentor Desteği",
                                 "Detaylı Deneme Analizleri",
                                 "Eksik Konu Tespiti ve Giderme"
                             ].map((text, i) => (

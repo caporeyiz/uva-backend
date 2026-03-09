@@ -23,6 +23,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -59,7 +60,7 @@ export default function LoginPage() {
           
           <div className="relative z-10 flex items-center gap-2">
             <Sparkles size={28} className="font-bold" />
-            <h2 className="text-xl font-bold tracking-tight">YKS-AI Mentor</h2>
+            <h2 className="text-xl font-bold tracking-tight">UVA-AI Mentor</h2>
           </div>
 
           <div className="relative z-10 space-y-6">
@@ -67,7 +68,7 @@ export default function LoginPage() {
               Hayallerine <br /> <span className="text-blue-200">Bir Adım</span> Kaldı.
             </h1>
             <p className="text-blue-100 text-lg max-w-sm">
-              YKS-AI Mentor ile kişiselleştirilmiş çalışma programın seni bekliyor. Hemen giriş yap ve tempoyu artır.
+              UVA-AI Mentor ile kişiselleştirilmiş çalışma programın seni bekliyor. Hemen giriş yap ve tempoyu artır.
             </p>
           </div>
 
@@ -146,6 +147,19 @@ export default function LoginPage() {
                   required
                 />
               </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 text-primary bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-600 rounded focus:ring-2 focus:ring-primary/20"
+              />
+              <label htmlFor="rememberMe" className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
+                Beni Hatırla (1 hafta)
+              </label>
             </div>
 
             <button 

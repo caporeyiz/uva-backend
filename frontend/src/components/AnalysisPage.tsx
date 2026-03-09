@@ -109,7 +109,7 @@ export default function AnalysisPage() {
           <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
             <BarChart3 size={20} />
           </div>
-          <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">AI Deneme Analizi</h2>
+          <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">UVA-AI Deneme Analizi</h2>
         </div>
         <div className="flex gap-3">
           <button className="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors">
@@ -295,7 +295,7 @@ export default function AnalysisPage() {
                     <Loader2 size={40} className="animate-spin text-white/50" />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto pr-2">
                     {prescriptions.map((item, i) => (
                       <div key={i} className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
                         <div className="flex justify-between items-start mb-2">

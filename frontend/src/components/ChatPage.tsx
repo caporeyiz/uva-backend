@@ -117,7 +117,7 @@ export default function ChatPage() {
             <Sparkles size={24} />
           </div>
           <div>
-            <h2 className="text-lg font-bold leading-tight tracking-tight">AI Mentor</h2>
+            <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
             <div className="flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -159,7 +159,7 @@ export default function ChatPage() {
               <div className={`flex flex-col gap-2 ${msg.role === 'user' ? 'items-end' : ''}`}>
                 <div className="flex items-center gap-2">
                   <span className={`text-xs font-bold uppercase tracking-wide ${msg.role === 'ai' ? 'text-primary' : 'text-slate-500'}`}>
-                    {msg.role === 'ai' ? 'AI Mentor' : 'Öğrenci'}
+                    {msg.role === 'ai' ? 'UVA-AI Mentor' : 'Öğrenci'}
                   </span>
                   <span className="text-[10px] text-slate-400">{msg.timestamp}</span>
                 </div>
@@ -186,7 +186,7 @@ export default function ChatPage() {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-primary uppercase tracking-wide">AI Mentor</span>
+                  <span className="text-xs font-bold text-primary uppercase tracking-wide">UVA-AI Mentor</span>
                   <Loader2 size={14} className="animate-spin text-primary" />
                 </div>
                 <div className="rounded-2xl rounded-tl-none bg-white dark:bg-slate-800 p-5 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -262,7 +262,7 @@ export default function ChatPage() {
           </button>
         </div>
         <p className="text-center text-[11px] text-slate-400 mt-3 uppercase tracking-widest font-medium">
-          AI Mentor hata yapabilir. Önemli bilgileri kontrol edin.
+          UVA-AI Mentor hata yapabilir. Önemli bilgileri kontrol edin.
         </p>
       </footer>
 

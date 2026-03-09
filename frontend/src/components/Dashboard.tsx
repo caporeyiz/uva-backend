@@ -163,7 +163,7 @@ export default function Dashboard() {
           <div className="text-primary">
             <Zap size={32} fill="currentColor" />
           </div>
-          <h2 className="text-lg font-bold leading-tight tracking-tight">YKS AI Mentor</h2>
+          <h2 className="text-lg font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
         </div>
         <div className="flex flex-1 justify-end gap-4 items-center">
           <div className="hidden md:flex gap-2">
@@ -207,7 +207,7 @@ export default function Dashboard() {
             </nav>
           </div>
           <div className="mt-auto p-4 rounded-xl bg-primary/5 border border-primary/10 flex flex-col gap-3">
-            <p className="text-sm font-bold text-primary">AI Mentor Premium</p>
+            <p className="text-sm font-bold text-primary">UVA-AI Mentor Premium</p>
             <p className="text-xs text-slate-500">Kişiselleştirilmiş çalışma programı ve 7/24 soru çözümü için yükselt.</p>
             <button className="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors">Şimdi Yükselt</button>
           </div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
                   <Bot className="text-white" size={24} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-bold text-primary">AI Mentor Görüşü</h3>
+                  <h3 className="font-bold text-primary">UVA-AI Mentor Görüşü</h3>
                   {isAiLoading ? (
                     <div className="flex items-center gap-2 text-slate-400">
                       <Loader2 size={14} className="animate-spin" />

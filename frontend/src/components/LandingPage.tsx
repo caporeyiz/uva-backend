@@ -37,7 +37,7 @@ export default function LandingPage() {
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
           <div className="flex items-center gap-2 text-primary">
             <Sparkles size={28} className="font-bold" />
-            <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">YKS-AI Mentor</h2>
+            <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">UVA-AI Mentor</h2>
           </div>
 
           <nav className="hidden md:flex flex-1 justify-center gap-8">
@@ -240,7 +240,7 @@ export default function LandingPage() {
                         <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
                           <Sparkles size={18} />
                         </div>
-                        <span className="font-bold">AI Mentor</span>
+                        <span className="font-bold">UVA-AI Mentor</span>
                       </div>
                       <div className="flex gap-2">
                         <div className="size-2 rounded-full bg-green-500"></div>
@@ -335,7 +335,7 @@ export default function LandingPage() {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl -ml-48 -mb-48"></div>
             <div className="max-w-5xl mx-auto text-center relative z-10">
               <h2 className="text-3xl md:text-5xl font-extrabold mb-8">Hayalindeki Üniversite İçin İlk Adımı At</h2>
-              <p className="text-white/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto">Binlerce öğrenci AI Mentor ile netlerini artırıyor. Sen de bu başarının bir parçası olmaya hazır mısın?</p>
+              <p className="text-white/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto">Binlerce öğrenci UVA-AI Mentor ile netlerini artırıyor. Sen de bu başarının bir parçası olmaya hazır mısın?</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => navigate('/register')}
@@ -357,7 +357,7 @@ export default function LandingPage() {
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center gap-2 text-primary mb-6">
                 <Sparkles size={24} className="font-bold" />
-                <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold">YKS-AI Mentor</h2>
+                <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold">UVA-AI Mentor</h2>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">Yapay zeka teknolojisini eğitimle birleştirerek öğrencilerin sınav yolculuğunda en büyük yardımcısı oluyoruz.</p>
             </div>
@@ -391,7 +391,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">© 2024 YKS-AI Mentor. Tüm hakları saklıdır.</p>
+            <p className="text-slate-500 text-sm">© 2024 UVA-AI Mentor. Tüm hakları saklıdır.</p>
             <div className="flex gap-6 text-slate-400">
               <a className="hover:text-primary transition-all" href="#"><LayoutDashboard size={20} /></a>
               <a className="hover:text-primary transition-all" href="#"><Send size={20} /></a>
